@@ -1,21 +1,27 @@
-tasks = []
+import sqlite3
+
+connection = sqlite3.connect("databaseTO.db")
+
+def create_table():
+    with connection:
+        connection.execute('CREATE TABLE IF NOT EXISTS tasks (task_name text, deadline_date text)')
+
+def add_task(nameOfTask, completionDate):
+    with connection:
+        connection.execute("INSERT INTO tasks VALUES (?, ?);", (nameOfTask, completionDate))
 
 
-def add_taks():
-    nameOfTask = input("Enter the task name:  ")
-    completionDate = input ("Enter date by when the task must be completed: ")
-    tasks.append({"taskName": nameOfTask, "deadline date": completionDate})
+def get_tasks():
+    cursor = connection.cursor
+    cursor.execute('SELECT * FROM tasks')
+
+def delete_task(taskToDelete):
+    with connection:
+        connection.execute('DELETE FROM tasks WHERE task_name = {taskToDelete} ')
 
 
 
-def view_tasks():
-    for task in tasks:
-        print(f"{task['deadline date']}\n{task['taskName']}\n\n")
 
-def delete_task():
-    taskToDelete = input('Enter name of task that you want to delete: ')
-    for task in tasks:
-        if (task['taskName'] == taskToDelete):
-            tasks.remove(task)
+        
 
 
