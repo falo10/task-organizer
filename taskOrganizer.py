@@ -1,4 +1,5 @@
 from enum import IntEnum
+import database
 
 menu = """Select one of the following opotions below:
 1) Add new task
@@ -14,10 +15,10 @@ MenuOptions = IntEnum('MenuOption', "Add View Delete Exit")
 
 while ((decision:=input(menu))!= str(MenuOptions.Exit.value)):
 	if (decision == str(MenuOptions.Add.value)):
-		print ("lets add.....")
+		database.add_taks()
 	elif (decision == str(MenuOptions.View.value)):
-		print ("lets check...")
+		database.view_tasks()
 	elif (decision == str(MenuOptions.Delete.value)):
-		print ("lets delete...")
+		database.delete_task()
 	else:
 		print ("Invalid input! Try again!")
