@@ -15,9 +15,7 @@ def get_tasks():
     cursor = connection.cursor
     cursor.execute('SELECT * FROM tasks')
 
-def delete_task(taskToDelete):
-    with connection:
-        connection.execute('DELETE FROM tasks WHERE task_name = {taskToDelete} ')
+
 
 
 
