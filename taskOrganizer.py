@@ -1,6 +1,7 @@
 from enum import IntEnum
 import database
 
+
 menu = """Select one of the following opotions below:
 1) Add new task
 2) View your tasks
@@ -15,7 +16,7 @@ def enter_task():
 
 def view_task(tasks):
 	for task in tasks:
-		print (f"{task[1]}\n{task[0]}\n\n")
+		print (f"{task['deadline_date']}\n{task['task_name']}\n\n")
 
 
 
@@ -23,7 +24,7 @@ database.create_table()
 
 print ("""Welcome to Task Organizer by falo10, now You will never forget your tasks at work again!""")
 
-MenuOptions = IntEnum('MenuOption', "Add View Exit")
+MenuOptions = IntEnum("MenuOption", "Add View Exit")
 
 while ((decision:=input(menu))!= str(MenuOptions.Exit.value)):
 	if (decision == str(MenuOptions.Add.value)):
