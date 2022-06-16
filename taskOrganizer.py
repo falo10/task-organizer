@@ -13,6 +13,11 @@ def enter_task():
 	completionDate = input ("Enter date by when the task must be completed: ")
 	database.add_task(nameOfTask, completionDate )
 
+def view_task(tasks):
+	for task in tasks:
+		print (f"{task[1]}\n{task[0]}\n\n")
+
+
 
 database.create_table()
 
@@ -25,6 +30,6 @@ while ((decision:=input(menu))!= str(MenuOptions.Exit.value)):
 		enter_task()
 		print ("Task has been successfully added to your task list\n")
 	elif (decision == str(MenuOptions.View.value)):
-		database.get_tasks()
+		view_task(database.get_tasks())
 	else:
 		print ("Invalid input! Try again!")
