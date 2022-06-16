@@ -4,42 +4,60 @@ import sqlite3
 CREATE_TASKS_TABLE = """CREATE TABLE IF NOT EXISTS tasks (
     task_id integer PRIMARY KEY AUTOINCREMENT,
     task_name text,
-    deadline_date text,
+    deadline text,
     comment text,
     status text
 );"""
 
-INSERT_INTO_TABLE = "INSERT INTO tasks(task_name, deadline_date, comment, status) VALUES (?, ?, ?, ?);"
+INSERT_INTO_TABLE = "INSERT INTO tasks(task_name, deadline, comment, status) VALUES (?, ?, ?, ?);"
 
 SELECT_ALL_TASKS = 'SELECT * FROM tasks;'
-SELECT_DONE_TASKS = 'SELECT * FROM tasks WHERE status = ?;'
+SELECT_COMPLETED_TASKS = 'SELECT * FROM tasks WHERE status = ?;'
 SELECT_TASKS_TO_DO = 'SELECT * FROM tasks WHERE status = ?;'
 DELETE_TASK = 'DELETE FROM task WHERE task_id = ?;'
+UPDATE_TASK = 'UPDATE tasks SET deadline =? comment=? WHERE task_id=?;'
+UPDATE_STATUS = 'UPDATE tasks SET status = ? WHERE task_id=?;'
+
+completedStatus = "complete"
 
 connection = sqlite3.connect("databaseTO.db")
 connection.row_factory = sqlite3.Row
+
+
 
 
 def create_table():
     with connection:
         connection.execute(CREATE_TASKS_TABLE)
 
-def add_task(nameOfTask, completionDate, comment, status):
+def add_task(nameOfTask, completionDate, comment, statusDefault):
     with connection:
-        connection.execute(INSERT_INTO_TABLE, (nameOfTask, completionDate, comment, status))
-
+        connection.execute(INSERT_INTO_TABLE, (nameOfTask, completionDate, comment, statusDefault))
 
 def get_tasks():
     cursor = connection.execute(SELECT_ALL_TASKS)
     return cursor
 
+def get_completed_tasks():
+    cursor = connection.execute(SELECT_COMPLETED_TASKS, completedStatus)
+    return cursor
 
-
+def get_to_do_tasks():
+    cursor = connection.execute(SELECT_TASKS_TO_DO, completedStatus)
+    return cursor
     
 
+def delete_task(task_id):
+    with connection:
+        connection.execute(DELETE_TASK, task_id)
 
+def update (newCompletionDate,newComment, idOfTaskToUpdate):
+    with connection:
+        connection.execute(UPDATE_TASK, (newCompletionDate, newComment, idOfTaskToUpdate))
 
-
+def update_status (task_id):
+    with connection:
+        connection.execute(UPDATE_STATUS,(completedStatus, task_id))
 
 
         
