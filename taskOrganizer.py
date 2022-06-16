@@ -12,12 +12,13 @@ Your selection: """
 def enter_task():
 	nameOfTask = input("Enter the task name:  ")
 	completionDate = input ("Enter date by when the task must be completed: ")
-	database.add_task(nameOfTask, completionDate )
+	comment = input ("Enter the comment: ")
+	status = 'to do'
+	database.add_task(nameOfTask, completionDate, comment, status)
 
 def view_task(tasks):
 	for task in tasks:
-		print (f"{task['deadline_date']}\n{task['task_name']}\n\n")
-
+		print (f"{task['deadline_date']}\n{task['task_name']}\n{task['comment']}\n\n")
 
 
 database.create_table()
