@@ -12,8 +12,9 @@ def add_task(nameOfTask, completionDate):
 
 
 def get_tasks():
-    cursor = connection.cursor
-    cursor.execute('SELECT * FROM tasks')
+    cursor = connection.execute('SELECT * FROM tasks')
+    return cursor
+    
 
 
 
