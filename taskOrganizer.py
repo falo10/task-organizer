@@ -1,3 +1,4 @@
+import datetime
 from enum import IntEnum
 import database
 
@@ -5,7 +6,7 @@ import database
 menu = """Select one of the following opotions below:
 1) Add new task
 2) View all your tasks
-3) View tasks to do
+3) View tasks to do (in order of the deadline)
 4) View completed tasks
 5) Delete the task from your list
 6) Change deadline and comment of task
@@ -16,9 +17,11 @@ Your selection: """
 
 def enter_task():
 	nameOfTask = input("\nEnter the task name:  ")
-	completionDate = input ("Enter date by when the task must be completed: ")
+	completionDate = input ("Enter date by when the task must be completed (dd-mm-YYYY): ")
+	completionDateFormat = datetime.datetime.strptime(completionDate, "%d-%m-%Y")
+	timestamp = completionDateFormat.timestamp()
 	comment = input ("Enter the comment: ")
-	database.add_task(nameOfTask, completionDate, comment)
+	database.add_task(nameOfTask, completionDate, comment, timestamp)
 
 def view_task(tasks):
 	print("\nHere are all your tasks:\n") 
@@ -48,7 +51,7 @@ def enter_task_to_delete():
 
 def enter_task_to_update():
 	try:
-		idOfTaskToUpdate = int(input("\nEnter the id of task that you want to update:  "))
+		idOfTaskToUpdate = int(input("\nEnter the id of task that you want to update: "))
 		newCompletionDate = input ("Enter new date by when the task must be completed: ")
 		newComment = input ("Enter new comment: ")
 	except ValueError:
