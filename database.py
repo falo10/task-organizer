@@ -1,24 +1,36 @@
-from email.policy import default
 import sqlite3
 
 
+CREATE_USERS_TABLE =  """CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    first_name TEXT,
+    last_name TEXT
+);"""
+
 CREATE_TASKS_TABLE = """CREATE TABLE IF NOT EXISTS tasks (
-    task_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     task_name TEXT,
     deadline TEXT,
     comment TEXT,
     status TEXT,
-    date_timestamp REAL
+    date_timestamp REAL,
+    user_id INTEGER,
+    FOREIGN KEY (user_id) REFERENCES user(id)
 );"""
 
-INSERT_INTO_TABLE = "INSERT INTO tasks(task_name, deadline, comment, status, date_timestamp) VALUES (?, ?, ?, ?, ?);"
 
+INSERT_INTO_TASKS_TABLE = "INSERT INTO tasks(task_name, deadline, comment, status, date_timestamp, user_id) VALUES (?, ?, ?, ?, ?, ?);"
+INSERT_INTO_USERS_TABLE = "INSERT INTO users(first_name, last_name) VALUES (?, ?);"
+
+
+SELECT_USER_ID = 'SELECT * FROM users;'
 SELECT_ALL_TASKS = 'SELECT * FROM tasks;'
 SELECT_COMPLETED_TASKS = 'SELECT * FROM tasks WHERE status = ?;'
 SELECT_TASKS_TO_DO = 'SELECT * FROM tasks WHERE status = ? ORDER BY date_timestamp;'
-DELETE_TASK = 'DELETE FROM tasks WHERE task_id = ?;'
-UPDATE_TASK = 'UPDATE tasks SET deadline =?, comment=? WHERE task_id=?;'
-UPDATE_STATUS = 'UPDATE tasks SET status = ? WHERE task_id=?;'
+DELETE_TASK = 'DELETE FROM tasks WHERE id = ?;'
+DELETE_USER = 'DELETE FROM users WHERE id = ?;'
+UPDATE_TASK = 'UPDATE tasks SET deadline =?, comment=? WHERE id=?;'
+UPDATE_STATUS = 'UPDATE tasks SET status = ? WHERE id=?;'
 
 completedStatus = "COMPLETED"
 statusDefault = 'TO DO'
@@ -26,16 +38,25 @@ statusDefault = 'TO DO'
 connection = sqlite3.connect("databaseTO.db")
 
 
-
-
-
 def create_table():
     with connection:
+        connection.execute(CREATE_USERS_TABLE)
         connection.execute(CREATE_TASKS_TABLE)
+        
 
-def add_task(nameOfTask, completionDate, comment, timestamp):
+def add_user(firstName, lastName):
+     with connection:
+        connection.execute(INSERT_INTO_USERS_TABLE, (firstName, lastName))
+
+
+def get_users():
+    cursor = connection.execute(SELECT_USER_ID)
+    return cursor
+
+
+def add_task(nameOfTask, completionDate, comment, timestamp, userId):
     with connection:
-        connection.execute(INSERT_INTO_TABLE, (nameOfTask, completionDate, comment, statusDefault, timestamp))
+        connection.execute(INSERT_INTO_TASKS_TABLE, (nameOfTask, completionDate, comment, statusDefault, timestamp, userId))
 
 def get_tasks():
     cursor = connection.execute(SELECT_ALL_TASKS)
@@ -52,9 +73,12 @@ def get_completed_tasks():
 def delete_task(taskIdToDelete):
         with connection:
             connection.execute(DELETE_TASK, (taskIdToDelete,))
-    
-    
 
+def delete_user(userIdToDelete):
+        with connection:
+            connection.execute(DELETE_USER, (userIdToDelete,))
+    
+    
 def update (newCompletionDate,newComment, idOfTaskToUpdate):
     with connection:
         connection.execute(UPDATE_TASK, (newCompletionDate, newComment, idOfTaskToUpdate))
