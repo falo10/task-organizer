@@ -24,13 +24,27 @@ def enter_new_user():
 
 
 def enter_task():
-	userId = int(input("\nEnter the id of the user for which you want to add the task: "))
+	try:
+		userId = int(input("\nEnter the id of the user for which you want to add the task: "))
+	except ValueError:
+		print ("\nInvalid input! Try again!\n")
+		return True
 	nameOfTask = input("\nEnter the task name:  ")
-	completionDate = input ("Enter date by when the task must be completed (dd-mm-YYYY): ")
-	completionDateFormat = datetime.datetime.strptime(completionDate, "%d-%m-%Y")
-	timestamp = completionDateFormat.timestamp()
+	try:
+		completionDate = input ("Enter date by when the task must be completed (dd-mm-YYYY): ")
+		completionDateFormat = datetime.datetime.strptime(completionDate, "%d-%m-%Y")
+	except ValueError:
+		print ("\nInvalid input! Please enter the date with the format (dd-mm-YYYY)\n")
+		return True
+	else:
+		try:
+			timestamp = completionDateFormat.timestamp()
+		except OSError:
+			print ("\nIt cannot be a date before 1970\n")
+			return True
 	comment = input ("Enter the comment: ")
 	database.add_task(nameOfTask, completionDate, comment, timestamp, userId)
+	print ("Task has been successfully added to your task list!\n")
 
 def view_users_id(users):
 	print ('Here is the list of available users:\n')
@@ -120,7 +134,6 @@ while ((decision:=input(menu))!= str(MenuOptions.Exit.value)):
 		view_users_id(database.get_users())
 	elif (decision == str(MenuOptions.Add.value)):
 		enter_task()
-		print ("Task has been successfully added to your task list\n")
 	elif (decision == str(MenuOptions.View.value)):
 		view_task(database.get_tasks())
 	elif (decision == str(MenuOptions.To_DO.value)):
