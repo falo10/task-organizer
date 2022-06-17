@@ -9,7 +9,7 @@ menu = """Select one of the following opotions below:
 3) View all your tasks
 4) View tasks to do (in order of the deadline)
 5) View completed tasks
-6) Delete the task from your list
+6) Delete the task
 7) Change deadline and comment of task
 8) Mark the task as completed
 9) Delete user
@@ -133,12 +133,16 @@ while ((decision:=input(menu))!= str(MenuOptions.Exit.value)):
 		enter_new_user()
 		view_users_id(database.get_users())
 	elif (decision == str(MenuOptions.Add.value)):
+		view_users_id(database.get_users())
 		enter_task()
 	elif (decision == str(MenuOptions.View.value)):
+		view_users_id(database.get_users())
 		view_task(database.get_tasks())
 	elif (decision == str(MenuOptions.To_DO.value)):
+		view_users_id(database.get_users())
 		view_to_do_tasks(database.get_to_do_tasks())
 	elif (decision == str(MenuOptions.Completed.value)):
+		view_users_id(database.get_users())
 		view_completed_tasks(database.get_completed_tasks())
 	elif (decision == str(MenuOptions.Delete.value)):
 		enter_task_to_delete()
