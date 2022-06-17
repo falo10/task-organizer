@@ -4,24 +4,39 @@ import database
 
 
 menu = """Select one of the following opotions below:
-1) Add new task
-2) View all your tasks
-3) View tasks to do (in order of the deadline)
-4) View completed tasks
-5) Delete the task from your list
-6) Change deadline and comment of task
-7) Mark the task as completed
-8) Exit
+1) Add new user
+2) Add new task
+3) View all your tasks
+4) View tasks to do (in order of the deadline)
+5) View completed tasks
+6) Delete the task from your list
+7) Change deadline and comment of task
+8) Mark the task as completed
+9) Exit
 Your selection: """
 
 
+def enter_new_user():
+	firstName = input('\nEnter first name of the user: ')
+	lastName = input('\nEnter last name of the user: ')
+	database.add_user(firstName, lastName)
+
+
 def enter_task():
+	userId = int(input("\nEnter the id of the user for which you want to add the task: "))
 	nameOfTask = input("\nEnter the task name:  ")
 	completionDate = input ("Enter date by when the task must be completed (dd-mm-YYYY): ")
 	completionDateFormat = datetime.datetime.strptime(completionDate, "%d-%m-%Y")
 	timestamp = completionDateFormat.timestamp()
 	comment = input ("Enter the comment: ")
-	database.add_task(nameOfTask, completionDate, comment, timestamp)
+	database.add_task(nameOfTask, completionDate, comment, timestamp, userId)
+
+def view_users_id(users):
+	print ('Here is the list of available users:\n')
+	for user in users:
+		print (f"{user[1]} {user[2]} -> id = {user[0]}")
+	print('\n')
+
 
 def view_task(tasks):
 	print("\nHere are all your tasks:\n") 
@@ -40,13 +55,35 @@ def view_completed_tasks(tasksCompleted):
 		print (f"\ntask_name: {task[1]}\ntask_id: {task[0]}\nstatus: {task[4]}\ndeadline: {task[2]}\ncomment: {task[3]}\n\n")
 
 
-def enter_task_to_delete():
+def enter_user_to_delete():
 	try:
 		taskIdToDelete = int(input('\nEnter the id of the task you want to remove from the list: '))
 	except ValueError:
 		print ("\nInvalid input! Try again!\n")
 	else:
-		database.delete_task(taskIdToDelete)
+		users = database.get_users()
+		for user in users:
+			if (user[0] == taskIdToDelete):
+				userFirstNameToDelete = user[1]
+				userLastNameToDelete = user[2]
+			else:
+				return ('There is no user with that id')
+		decisionToDeleteUser = input (f"You will not be able to undo your decision!!!\n\nAre you sure you want to delete user {userFirstNameToDelete} {userLastNameToDelete}? yes/no:")
+		if (decisionToDeleteUser.upper() == 'YES'):
+			database.delete_task(taskIdToDelete)
+		elif (decisionToDeleteUser.upper() == 'NO'):
+			return True
+		else: 
+			print ("\nInvalid input!\n") 
+
+def enter_task_to_delete():
+	try:
+		userIdToDelete = int(input('\nEnter the id of the user you want to delete: '))
+	except ValueError:
+		print ("\nInvalid input! Try again!\n")
+	else:
+
+		database.delete_user(userIdToDelete)
 
 
 def enter_task_to_update():
@@ -72,10 +109,13 @@ database.create_table()
 
 print ("Welcome to Task Organizer by falo10, now You will never forget your tasks at work again!\n")
 
-MenuOptions = IntEnum("MenuOption", "Add View To_DO Completed Delete Update Status Exit")
+MenuOptions = IntEnum("MenuOption", "User Add View To_DO Completed Delete Update Status Exit")
 
 while ((decision:=input(menu))!= str(MenuOptions.Exit.value)):
-	if (decision == str(MenuOptions.Add.value)):
+	if (decision == str(MenuOptions.User.value)):
+		enter_new_user()
+		view_users_id(database.get_users())
+	elif (decision == str(MenuOptions.Add.value)):
 		enter_task()
 		print ("Task has been successfully added to your task list\n")
 	elif (decision == str(MenuOptions.View.value)):
