@@ -1,19 +1,21 @@
 from email.policy import default
 import sqlite3
 
+
 CREATE_TASKS_TABLE = """CREATE TABLE IF NOT EXISTS tasks (
-    task_id integer PRIMARY KEY AUTOINCREMENT,
-    task_name text,
-    deadline text,
-    comment text,
-    status text
+    task_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    task_name TEXT,
+    deadline TEXT,
+    comment TEXT,
+    status TEXT,
+    date_timestamp REAL
 );"""
 
-INSERT_INTO_TABLE = "INSERT INTO tasks(task_name, deadline, comment, status) VALUES (?, ?, ?, ?);"
+INSERT_INTO_TABLE = "INSERT INTO tasks(task_name, deadline, comment, status, date_timestamp) VALUES (?, ?, ?, ?, ?);"
 
 SELECT_ALL_TASKS = 'SELECT * FROM tasks;'
 SELECT_COMPLETED_TASKS = 'SELECT * FROM tasks WHERE status = ?;'
-SELECT_TASKS_TO_DO = 'SELECT * FROM tasks WHERE status = ?;'
+SELECT_TASKS_TO_DO = 'SELECT * FROM tasks WHERE status = ? ORDER BY date_timestamp;'
 DELETE_TASK = 'DELETE FROM tasks WHERE task_id = ?;'
 UPDATE_TASK = 'UPDATE tasks SET deadline =?, comment=? WHERE task_id=?;'
 UPDATE_STATUS = 'UPDATE tasks SET status = ? WHERE task_id=?;'
@@ -31,9 +33,9 @@ def create_table():
     with connection:
         connection.execute(CREATE_TASKS_TABLE)
 
-def add_task(nameOfTask, completionDate, comment):
+def add_task(nameOfTask, completionDate, comment, timestamp):
     with connection:
-        connection.execute(INSERT_INTO_TABLE, (nameOfTask, completionDate, comment, statusDefault))
+        connection.execute(INSERT_INTO_TABLE, (nameOfTask, completionDate, comment, statusDefault, timestamp))
 
 def get_tasks():
     cursor = connection.execute(SELECT_ALL_TASKS)
