@@ -22,7 +22,7 @@ completedStatus = "COMPLETED"
 statusDefault = 'TO DO'
 
 connection = sqlite3.connect("databaseTO.db")
-connection.row_factory = sqlite3.Row
+
 
 
 
@@ -48,8 +48,10 @@ def get_completed_tasks():
     return cursor
 
 def delete_task(taskIdToDelete):
-    with connection:
-        connection.execute(DELETE_TASK, (taskIdToDelete,))
+        with connection:
+            connection.execute(DELETE_TASK, (taskIdToDelete,))
+    
+    
 
 def update (newCompletionDate,newComment, idOfTaskToUpdate):
     with connection:
@@ -58,3 +60,7 @@ def update (newCompletionDate,newComment, idOfTaskToUpdate):
 def update_status (taskIdToComplete):
     with connection:
         connection.execute(UPDATE_STATUS,(completedStatus, taskIdToComplete))
+
+
+def close_connection ():
+    connection.close()
