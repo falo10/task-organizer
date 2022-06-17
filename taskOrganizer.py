@@ -12,7 +12,8 @@ menu = """Select one of the following opotions below:
 6) Delete the task from your list
 7) Change deadline and comment of task
 8) Mark the task as completed
-9) Exit
+9) Delete user
+10) Exit
 Your selection: """
 
 
@@ -57,24 +58,26 @@ def view_completed_tasks(tasksCompleted):
 
 def enter_user_to_delete():
 	try:
-		taskIdToDelete = int(input('\nEnter the id of the task you want to remove from the list: '))
+		taskIdToDelete = int(input('\nEnter the id of the user you want to remove from the list: '))
 	except ValueError:
 		print ("\nInvalid input! Try again!\n")
 	else:
 		users = database.get_users()
 		for user in users:
 			if (user[0] == taskIdToDelete):
+				print ('ok')
 				userFirstNameToDelete = user[1]
-				userLastNameToDelete = user[2]
+				userLastNameToDelete = user[2]	
+				decisionToDeleteUser = input (f"You will not be able to undo your decision!!!\n\nAre you sure you want to delete user {userFirstNameToDelete} {userLastNameToDelete}? yes/no: ")
+				if (decisionToDeleteUser.upper() == 'YES'):
+					database.delete_user(taskIdToDelete)
+				elif (decisionToDeleteUser.upper() == 'NO'):
+					return True
+				else: 
+					print ("\nInvalid input!\n") 			
 			else:
-				return ('There is no user with that id')
-		decisionToDeleteUser = input (f"You will not be able to undo your decision!!!\n\nAre you sure you want to delete user {userFirstNameToDelete} {userLastNameToDelete}? yes/no:")
-		if (decisionToDeleteUser.upper() == 'YES'):
-			database.delete_task(taskIdToDelete)
-		elif (decisionToDeleteUser.upper() == 'NO'):
-			return True
-		else: 
-			print ("\nInvalid input!\n") 
+				continue
+		
 
 def enter_task_to_delete():
 	try:
@@ -109,7 +112,7 @@ database.create_table()
 
 print ("Welcome to Task Organizer by falo10, now You will never forget your tasks at work again!\n")
 
-MenuOptions = IntEnum("MenuOption", "User Add View To_DO Completed Delete Update Status Exit")
+MenuOptions = IntEnum("MenuOption", "User Add View To_DO Completed Delete Update Status DeleteUser Exit")
 
 while ((decision:=input(menu))!= str(MenuOptions.Exit.value)):
 	if (decision == str(MenuOptions.User.value)):
@@ -130,6 +133,8 @@ while ((decision:=input(menu))!= str(MenuOptions.Exit.value)):
 		enter_task_to_update()
 	elif (decision == str(MenuOptions.Status.value)):
 		enter_task_to_update_status()
+	elif (decision == str(MenuOptions.DeleteUser.value)):
+		enter_user_to_delete()
 	else:
 		print ("\nInvalid input! Try again!\n")
 
