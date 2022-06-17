@@ -15,7 +15,7 @@ CREATE_TASKS_TABLE = """CREATE TABLE IF NOT EXISTS tasks (
     status TEXT,
     date_timestamp REAL,
     user_id INTEGER,
-    FOREIGN KEY (user_id) REFERENCES user(id)
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );"""
 
 
