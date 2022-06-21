@@ -15,9 +15,8 @@ CREATE_TASKS_TABLE = """CREATE TABLE IF NOT EXISTS tasks (
     status TEXT,
     date_timestamp REAL,
     user_id INTEGER,
-    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );"""
-
 
 INSERT_INTO_TASKS_TABLE = "INSERT INTO tasks(task_name, deadline, comment, status, date_timestamp, user_id) VALUES (?, ?, ?, ?, ?, ?);"
 INSERT_INTO_USERS_TABLE = "INSERT INTO users(first_name, last_name) VALUES (?, ?);"
@@ -36,6 +35,7 @@ completedStatus = "COMPLETED"
 statusDefault = 'TO DO'
 
 connection = sqlite3.connect("databaseTO.db")
+connection.execute("PRAGMA foreign_keys = 1")
 
 
 def create_table():
@@ -56,7 +56,10 @@ def get_users():
 
 def add_task(nameOfTask, completionDate, comment, timestamp, userId):
     with connection:
-        connection.execute(INSERT_INTO_TASKS_TABLE, (nameOfTask, completionDate, comment, statusDefault, timestamp, userId))
+        try:
+            connection.execute(INSERT_INTO_TASKS_TABLE, (nameOfTask, completionDate, comment, statusDefault, timestamp, userId))
+        except sqlite3.IntegrityError:
+            print ('\nUser with that id does not exist. Try again!\n')
 
 def get_tasks():
     cursor = connection.execute(SELECT_ALL_TASKS)
@@ -86,7 +89,6 @@ def update (newCompletionDate,newComment, idOfTaskToUpdate):
 def update_status (taskIdToComplete):
     with connection:
         connection.execute(UPDATE_STATUS,(completedStatus, taskIdToComplete))
-
 
 def close_connection ():
     connection.close()
