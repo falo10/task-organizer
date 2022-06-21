@@ -2,7 +2,6 @@ import datetime
 from enum import IntEnum
 import database
 
-
 menu = """Select one of the following opotions below:
 1) Add new user
 2) Add new task
@@ -44,7 +43,6 @@ def enter_task():
 			return True
 	comment = input ("Enter the comment: ")
 	database.add_task(nameOfTask, completionDate, comment, timestamp, userId)
-	print ("Task has been successfully added to your task list!\n")
 
 def view_users_id(users):
 	print ('Here is the list of available users:\n')
