@@ -98,19 +98,19 @@ def view_completed_tasks(tasksCompleted):
 
 def enter_user_to_delete():
 	try:
-		taskIdToDelete = int(input('\nEnter the id of the user you want to remove from the list: '))
+		userToDelete = int(input('\nEnter the id of the user you want to remove from the list: '))
 	except ValueError:
 		print ("\nInvalid input! Try again!\n")
 	else:
 		users = database.get_users()
 		for user in users:
-			if (user[0] == taskIdToDelete):
+			if (user[0] == userToDelete):
 				print ('ok')
 				userFirstNameToDelete = user[1]
 				userLastNameToDelete = user[2]	
 				decisionToDeleteUser = input (f"You will not be able to undo your decision!!!\n\nAre you sure you want to delete user {userFirstNameToDelete} {userLastNameToDelete}? yes/no: ")
 				if (decisionToDeleteUser.upper() == 'YES'):
-					database.delete_user(taskIdToDelete)
+					database.delete_user(userToDelete)
 				elif (decisionToDeleteUser.upper() == 'NO'):
 					return True
 				else: 
@@ -121,12 +121,12 @@ def enter_user_to_delete():
 
 def enter_task_to_delete():
 	try:
-		userIdToDelete = int(input('\nEnter the id of the user you want to delete: '))
+		taskIdToDelete = int(input('\nEnter the id of the task you want to delete: '))
 	except ValueError:
 		print ("\nInvalid input! Try again!\n")
 	else:
 
-		database.delete_user(userIdToDelete)
+		database.delete_task(taskIdToDelete)
 
 
 def enter_task_to_update():
