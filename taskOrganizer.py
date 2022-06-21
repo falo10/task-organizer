@@ -2,7 +2,7 @@ import datetime
 from enum import IntEnum
 import database
 
-menu = """Select one of the following opotions below:
+menu = """\nSelect one of the following opotions below:
 1) Add new user
 2) Add new task
 3) View all your tasks

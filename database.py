@@ -18,21 +18,24 @@ CREATE_TASKS_TABLE = """CREATE TABLE IF NOT EXISTS tasks (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );"""
 
-INSERT_INTO_TASKS_TABLE = "INSERT INTO tasks(task_name, deadline, comment, status, date_timestamp, user_id) VALUES (?, ?, ?, ?, ?, ?);"
-INSERT_INTO_USERS_TABLE = "INSERT INTO users(first_name, last_name) VALUES (?, ?);"
+INSERT_INTO_TASKS_TABLE = 'INSERT INTO tasks(task_name, deadline, comment, status, date_timestamp, user_id) VALUES (?, ?, ?, "TO DO", ?, ?);'
+INSERT_INTO_USERS_TABLE = 'INSERT INTO users(first_name, last_name) VALUES (?, ?);'
+
+
 
 
 SELECT_USER_ID = 'SELECT * FROM users;'
 SELECT_ALL_TASKS = 'SELECT * FROM tasks;'
-SELECT_COMPLETED_TASKS = 'SELECT * FROM tasks WHERE status = ?;'
-SELECT_TASKS_TO_DO = 'SELECT * FROM tasks WHERE status = ? ORDER BY date_timestamp;'
+SELECT_COMPLETED_TASKS = 'SELECT * FROM tasks WHERE status = "COMPLETED";'
+SELECT_TASKS_TO_DO = 'SELECT * FROM tasks WHERE status = "TO DO" ORDER BY date_timestamp;'
+
+
+
 DELETE_TASK = 'DELETE FROM tasks WHERE id = ?;'
 DELETE_USER = 'DELETE FROM users WHERE id = ?;'
 UPDATE_TASK = 'UPDATE tasks SET deadline =?, comment=? WHERE id=?;'
-UPDATE_STATUS = 'UPDATE tasks SET status = ? WHERE id=?;'
+UPDATE_STATUS = 'UPDATE tasks SET status = "COMPLETED" WHERE id=?;'
 
-completedStatus = "COMPLETED"
-statusDefault = 'TO DO'
 
 connection = sqlite3.connect("databaseTO.db")
 connection.execute("PRAGMA foreign_keys = 1")
@@ -57,7 +60,7 @@ def get_users():
 def add_task(nameOfTask, completionDate, comment, timestamp, userId):
     with connection:
         try:
-            connection.execute(INSERT_INTO_TASKS_TABLE, (nameOfTask, completionDate, comment, statusDefault, timestamp, userId))
+            connection.execute(INSERT_INTO_TASKS_TABLE, (nameOfTask, completionDate, comment, timestamp, userId))
         except sqlite3.IntegrityError:
             print ('\nUser with that id does not exist. Try again!\n')
 
@@ -66,11 +69,11 @@ def get_tasks():
     return cursor
 
 def get_to_do_tasks():
-    cursor = connection.execute(SELECT_TASKS_TO_DO, (statusDefault,))
+    cursor = connection.execute(SELECT_TASKS_TO_DO)
     return cursor
     
 def get_completed_tasks():
-    cursor = connection.execute(SELECT_COMPLETED_TASKS, (completedStatus,))
+    cursor = connection.execute(SELECT_COMPLETED_TASKS)
     return cursor
 
 def delete_task(taskIdToDelete):
@@ -88,7 +91,7 @@ def update (newCompletionDate,newComment, idOfTaskToUpdate):
 
 def update_status (taskIdToComplete):
     with connection:
-        connection.execute(UPDATE_STATUS,(completedStatus, taskIdToComplete))
+        connection.execute(UPDATE_STATUS,(taskIdToComplete,))
 
 def close_connection ():
     connection.close()
