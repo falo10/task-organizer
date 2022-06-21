@@ -12,7 +12,7 @@ menu = """\nSelect one of the following opotions below:
 7) Change deadline and comment of task
 8) Mark the task as completed
 9) Delete user
-10) Exit3
+10) Exit
 Your selection: """
 
 
@@ -58,7 +58,7 @@ def pass_id_to_view_tasks():
 		print ("\nInvalid input! Try again!\n")
 		return True
 	else:
-		database.get_tasks(userId)
+		return database.get_tasks(userId)
 
 def pass_id_to_view_completed_tasks():
 	try:
@@ -67,7 +67,7 @@ def pass_id_to_view_completed_tasks():
 		print ("\nInvalid input! Try again!\n")
 		return True
 	else:
-		database.get_completed_tasks(userId)
+		return database.get_completed_tasks(userId)
 
 def pass_id_to_view_to_do_tasks():
 	try:
@@ -76,18 +76,19 @@ def pass_id_to_view_to_do_tasks():
 		print ("\nInvalid input! Try again!\n")
 		return True
 	else:
-		database.get_to_do_tasks(userId)
+		return database.get_to_do_tasks(userId)
 
 def view_tasks(tasks):
 	print("\nHere are all your tasks:\n") 
 	for task in tasks:
-			print (f"\nuser_id:{task[6]}\ntask_name: {task[1]}\ntask_id: {task[0]}\nstatus: {task[4]}\ndeadline: {task[2]}\ncomment: {task[3]}\n\n")
-	
+		print (f"\nuser_id:{task[6]}\ntask_name: {task[1]}\ntask_id: {task[0]}\nstatus: {task[4]}\ndeadline: {task[2]}\ncomment: {task[3]}\n\n")
+
 
 def view_to_do_tasks(tasksToDo):
 	print("\nHere are all your tasks:\n") 
 	for task in tasksToDo:
 		print (f"\nuser_id:{task[6]}\ntask_name: {task[1]}\ntask_id: {task[0]}\nstatus: {task[4]}\ndeadline: {task[2]}\ncomment: {task[3]}\n\n")
+	
 
 def view_completed_tasks(tasksCompleted):
 	print("\nHere are all your tasks:\n") 
