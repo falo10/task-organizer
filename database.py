@@ -14,11 +14,11 @@ CREATE_TASKS_TABLE = """CREATE TABLE IF NOT EXISTS tasks (
     comment TEXT,
     status TEXT,
     date_timestamp REAL,
-    user_id INTEGER,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    users_id INTEGER,
+    FOREIGN KEY (users_id) REFERENCES users(id) ON DELETE CASCADE
 );"""
 
-INSERT_INTO_TASKS_TABLE = 'INSERT INTO tasks(task_name, deadline, comment, status, date_timestamp, user_id) VALUES (?, ?, ?, "TO DO", ?, ?);'
+INSERT_INTO_TASKS_TABLE = 'INSERT INTO tasks(task_name, deadline, comment, status, date_timestamp, users_id) VALUES (?, ?, ?, "TO DO", ?, ?);'
 INSERT_INTO_USERS_TABLE = 'INSERT INTO users(first_name, last_name) VALUES (?, ?);'
 
 
@@ -29,7 +29,9 @@ SELECT_ALL_TASKS = 'SELECT * FROM tasks;'
 SELECT_COMPLETED_TASKS = 'SELECT * FROM tasks WHERE status = "COMPLETED";'
 SELECT_TASKS_TO_DO = 'SELECT * FROM tasks WHERE status = "TO DO" ORDER BY date_timestamp;'
 
-
+SELECT_ALL_USER_TASKS = 'SELECT * FROM tasks JOIN users ON tasks.users_id = users.id WHERE users.id = ?;'
+SELECT_COMPLETED_USER_TASKS = 'SELECT * FROM tasks JOIN users ON tasks.users_id = users.id WHERE users.id = ? AND tasks.status = "COMPLETED";'
+SELECT_TO_DO_USER_TASKS = 'SELECT * FROM tasks JOIN users ON tasks.users_id = users.id WHERE users.id = ? AND tasks.status = "TO DO" ORDER BY date_timestamp;'
 
 DELETE_TASK = 'DELETE FROM tasks WHERE id = ?;'
 DELETE_USER = 'DELETE FROM users WHERE id = ?;'
@@ -64,16 +66,16 @@ def add_task(nameOfTask, completionDate, comment, timestamp, userId):
         except sqlite3.IntegrityError:
             print ('\nUser with that id does not exist. Try again!\n')
 
-def get_tasks():
-    cursor = connection.execute(SELECT_ALL_TASKS)
+def get_tasks(userId):
+    cursor = connection.execute(SELECT_ALL_USER_TASKS, (userId,))
     return cursor
 
-def get_to_do_tasks():
-    cursor = connection.execute(SELECT_TASKS_TO_DO)
+def get_to_do_tasks(userId):
+    cursor = connection.execute(SELECT_TO_DO_USER_TASKS, (userId,))
     return cursor
     
-def get_completed_tasks():
-    cursor = connection.execute(SELECT_COMPLETED_TASKS)
+def get_completed_tasks(userId):
+    cursor = connection.execute(SELECT_COMPLETED_USER_TASKS, (userId,))
     return cursor
 
 def delete_task(taskIdToDelete):
