@@ -12,7 +12,7 @@ menu = """\nSelect one of the following opotions below:
 7) Change deadline and comment of task
 8) Mark the task as completed
 9) Delete user
-10) Exit
+10) Exit3
 Your selection: """
 
 
@@ -51,21 +51,48 @@ def view_users_id(users):
 	print('\n')
 
 
-def view_task(tasks):
+def pass_id_to_view_tasks():
+	try:
+		userId = int(input("\nEnter the id of the user for which you want to check all tasks: "))
+	except ValueError:
+		print ("\nInvalid input! Try again!\n")
+		return True
+	else:
+		database.get_tasks(userId)
+
+def pass_id_to_view_completed_tasks():
+	try:
+		userId = int(input("\nEnter the id of the user for which you want to check completed tasks: "))
+	except ValueError:
+		print ("\nInvalid input! Try again!\n")
+		return True
+	else:
+		database.get_completed_tasks(userId)
+
+def pass_id_to_view_to_do_tasks():
+	try:
+		userId = int(input("\nEnter the id of the user for which you want to check to do tasks: "))
+	except ValueError:
+		print ("\nInvalid input! Try again!\n")
+		return True
+	else:
+		database.get_to_do_tasks(userId)
+
+def view_tasks(tasks):
 	print("\nHere are all your tasks:\n") 
 	for task in tasks:
-			print (f"\ntask_name: {task[1]}\ntask_id: {task[0]}\nstatus: {task[4]}\ndeadline: {task[2]}\ncomment: {task[3]}\n\n")
+			print (f"\nuser_id:{task[6]}\ntask_name: {task[1]}\ntask_id: {task[0]}\nstatus: {task[4]}\ndeadline: {task[2]}\ncomment: {task[3]}\n\n")
 	
 
 def view_to_do_tasks(tasksToDo):
 	print("\nHere are all your tasks:\n") 
 	for task in tasksToDo:
-		print (f"\ntask_name: {task[1]}\ntask_id: {task[0]}\nstatus: {task[4]}\ndeadline: {task[2]}\ncomment: {task[3]}\n\n")
+		print (f"\nuser_id:{task[6]}\ntask_name: {task[1]}\ntask_id: {task[0]}\nstatus: {task[4]}\ndeadline: {task[2]}\ncomment: {task[3]}\n\n")
 
 def view_completed_tasks(tasksCompleted):
 	print("\nHere are all your tasks:\n") 
 	for task in tasksCompleted:
-		print (f"\ntask_name: {task[1]}\ntask_id: {task[0]}\nstatus: {task[4]}\ndeadline: {task[2]}\ncomment: {task[3]}\n\n")
+		print (f"\nuser_id:{task[6]}\ntask_name: {task[1]}\ntask_id: {task[0]}\nstatus: {task[4]}\ndeadline: {task[2]}\ncomment: {task[3]}\n\n")
 
 
 def enter_user_to_delete():
@@ -135,13 +162,13 @@ while ((decision:=input(menu))!= str(MenuOptions.Exit.value)):
 		enter_task()
 	elif (decision == str(MenuOptions.View.value)):
 		view_users_id(database.get_users())
-		view_task(database.get_tasks())
+		view_tasks(pass_id_to_view_tasks())
 	elif (decision == str(MenuOptions.To_DO.value)):
 		view_users_id(database.get_users())
-		view_to_do_tasks(database.get_to_do_tasks())
+		view_to_do_tasks(pass_id_to_view_to_do_tasks())
 	elif (decision == str(MenuOptions.Completed.value)):
 		view_users_id(database.get_users())
-		view_completed_tasks(database.get_completed_tasks())
+		view_completed_tasks(pass_id_to_view_completed_tasks())
 	elif (decision == str(MenuOptions.Delete.value)):
 		enter_task_to_delete()
 	elif (decision == str(MenuOptions.Update.value)):
